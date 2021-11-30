@@ -26,7 +26,7 @@ public interface UserApi {
             @ApiResponse(code = 200, message = "User Updated", response = Profile.class),
             @ApiResponse(code = 404, message = "User profile not found"),
             @ApiResponse(code = 200, message = "Unknown Error", response = ErrorResponseDefault.class) })
-    @RequestMapping(value = "/user-java/{userID}",
+    @RequestMapping(value = "/XXuser-java/{userID}",
             consumes = { "application/json" },
             method = RequestMethod.PATCH)
     ResponseEntity<Profile> updateUser(@ApiParam(value = "User's unique ID",required=true) @PathVariable("userID") String userID,@ApiParam(value = "Details of the profile" ,required=true )  @Valid @RequestBody Profile profile);
