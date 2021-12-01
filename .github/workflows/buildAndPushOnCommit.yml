@@ -25,6 +25,7 @@ jobs:
 
   deploy:
     if: success()    # Deploy only when build was successful
+    needs: build     # Wait for deploy
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
