@@ -22,3 +22,14 @@ jobs:
         run: |
           echo "Building API-USER-JAVA image..."
           az acr build --image "devopsoh/api-user-java:${{ github.sha }}" --registry openhackx6e34ru4acr --file Dockerfile .
+
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to Azure WebApp
+        uses: Azure/webapps-deploy@v2
+        with:
+          app-name: openhackx6e34ru4userjava
+          slot-name: production
+          images: "openhackx6e34ru4acr.azurecr.io/devopsoh/api-user-java:${{ github.sha }}"
+   
