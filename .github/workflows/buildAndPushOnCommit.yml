@@ -50,6 +50,6 @@ jobs:
         uses: Azure/webapps-deploy@v2
         with:
           app-name: ${{ env.WEBAPP }}
-          slot-name: production
+          slot-name: staging
           images: "${{ env.ACRNAME }}.azurecr.io/devopsoh/api-user-java:${{ env.IMAGETAG }}"
    
