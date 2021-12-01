@@ -53,3 +53,5 @@ jobs:
           slot-name: staging
           images: "${{ env.ACRNAME }}.azurecr.io/devopsoh/api-user-java:${{ env.IMAGETAG }}"
    
+      - name: Test health
+        run: ./polling.sh -i ${WEBAPP}-staging.azurewebsites.net/api/healthcheck/user-java
