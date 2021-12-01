@@ -27,7 +27,7 @@ jobs:
           echo "Building API-USER-JAVA image..."
           az acr build --image "devopsoh/api-user-java:$IMAGETAG" --registry $ACRNAME --file Dockerfile .
 
-  deploy:
+  deployStaging:
     if: success()    # Deploy only when build was successful
     needs: build     # Wait for deploy
     runs-on: ubuntu-latest
@@ -46,7 +46,7 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDS }}
           
-      - name: Deploy to Azure WebApp
+      - name: Deploy to STAGING Azure WebApp
         uses: Azure/webapps-deploy@v2
         with:
           app-name: ${{ env.WEBAPP }}
@@ -57,3 +57,30 @@ jobs:
         run: |
           chmod +x ./polling.sh
           ./polling.sh -i ${WEBAPP}-staging.azurewebsites.net/api/healthcheck/user-java
+
+  deployProduction:
+    if: success()             # Deploy only when staging deploy and health check was successful
+    needs: deployStaging      # Wait for deploy
+    runs-on: ubuntu-latest
+    
+    env:
+      ACRNAME: 'openhackx6e34ru4acr'
+      IMAGETAG: ${{ github.sha }}
+      WEBAPP: openhackx6e34ru4userjava
+      
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Login to Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDS }}
+
+      - name: Deploy to PRODUCTION Azure WebApp
+        if: ${{ success() }}
+        uses: Azure/webapps-deploy@v2
+        with:
+          app-name: ${{ env.WEBAPP }}
+          slot-name: production
+          images: "${{ env.ACRNAME }}.azurecr.io/devopsoh/api-user-java:${{ env.IMAGETAG }}"
