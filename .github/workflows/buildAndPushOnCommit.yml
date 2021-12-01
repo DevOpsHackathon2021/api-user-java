@@ -8,6 +8,10 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    
+    env:
+      ACRNAME: 'openhackx6e34ru4acr'
+      IMAGETAG: ${{ github.sha }}
 
     steps:
       - name: Checkout
@@ -21,12 +25,18 @@ jobs:
       - name: Build app in ACR and push
         run: |
           echo "Building API-USER-JAVA image..."
-          az acr build --image "devopsoh/api-user-java:${{ github.sha }}" --registry openhackx6e34ru4acr --file Dockerfile .
+          az acr build --image "devopsoh/api-user-java:$IMAGETAG" --registry $ACRNAME --file Dockerfile .
 
   deploy:
     if: success()    # Deploy only when build was successful
     needs: build     # Wait for deploy
     runs-on: ubuntu-latest
+    
+    env:
+      ACRNAME: 'openhackx6e34ru4acr'
+      IMAGETAG: ${{ github.sha }}
+      WEBAPP: openhackx6e34ru4userjava
+      
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -39,7 +49,7 @@ jobs:
       - name: Deploy to Azure WebApp
         uses: Azure/webapps-deploy@v2
         with:
-          app-name: openhackx6e34ru4userjava
+          app-name: ${{ env.WEBAPP }}
           slot-name: production
-          images: "openhackx6e34ru4acr.azurecr.io/devopsoh/api-user-java:${{ github.sha }}"
+          images: "${{ env.ACRNAME }}.azurecr.io/devopsoh/api-user-java:${{ env.IMAGETAG }}"
    
