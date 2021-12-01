@@ -24,6 +24,7 @@ jobs:
           az acr build --image "devopsoh/api-user-java:${{ github.sha }}" --registry openhackx6e34ru4acr --file Dockerfile .
 
   deploy:
+    if: success()    # Deploy only when build was successful
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
