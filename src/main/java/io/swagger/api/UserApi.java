@@ -5,7 +5,7 @@
  */
 package io.swagger.api;
 
-import io.swagger.model.ErrorResponseDefault;
+Ximport io.swagger.model.ErrorResponseDefault;
 import io.swagger.model.InlineResponseDefault;
 import io.swagger.model.Profile;
 import io.swagger.annotations.*;
