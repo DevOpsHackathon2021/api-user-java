@@ -18,6 +18,7 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDS }}
     
-      - name: Test Azure connectivity
+      - name: Build app in ACR and push
         run: |
-          az group list -o table
+          echo "Building API-USER-JAVA image..."
+          az acr build --image "devopsoh/api-user-java:${{ github.sha }}" --registry openhackx6e34ru4acr --file Dockerfile .
