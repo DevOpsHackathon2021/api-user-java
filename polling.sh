@@ -47,7 +47,8 @@ healthcheck() {
     echo $result
 }
 
-while [[ true ]]; do
+for x in {0..120}
+do
    result=`healthcheck $endpoint` 
    declare status
    if [[ -z $result ]]; then 
@@ -63,3 +64,10 @@ while [[ true ]]; do
    fi 
    sleep $duration
 done
+
+if [[ $status != "200" ]]; then
+  echo "Service is not available"
+  exit 1
+fi
+echo "Service is available"
+exit 0
