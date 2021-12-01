@@ -58,6 +58,16 @@ jobs:
           chmod +x ./polling.sh
           ./polling.sh -i ${WEBAPP}-staging.azurewebsites.net/api/healthcheck/user-java
 
+      - uses: nashmaniac/create-issue-action@v1.1
+        name: Create Issue Action
+        if: ${{ failure() }}
+        with:
+          title: Deployment to staging failed healthcheck
+          token: ${{secrets.GITHUB_TOKEN}}
+          assignees: ${{github.actor}}
+          labels: worflow-failed
+          body: Deployment to staging failed healthcheck for commit ${{github.sha}}
+
   deployProduction:
     if: success()             # Deploy only when staging deploy and health check was successful
     needs: deployStaging      # Wait for deploy
@@ -67,6 +77,7 @@ jobs:
       ACRNAME: 'openhackx6e34ru4acr'
       IMAGETAG: ${{ github.sha }}
       WEBAPP: openhackx6e34ru4userjava
+      WEBAPP_RG: openhackx6e34ru4rg
       
     steps:
       - name: Checkout
@@ -77,10 +88,11 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDS }}
 
-      - name: Deploy to PRODUCTION Azure WebApp
+      - name: Swap STAGING to PRODUCTION in Azure WebApp
         if: ${{ success() }}
-        uses: Azure/webapps-deploy@v2
-        with:
-          app-name: ${{ env.WEBAPP }}
-          slot-name: production
-          images: "${{ env.ACRNAME }}.azurecr.io/devopsoh/api-user-java:${{ env.IMAGETAG }}"
+        run: az webapp deployment slot swap -s staging --target-slot production -n $WEBAPP -g $WEBAPP_RG
+   
+      - name: Test health
+        run: |
+          chmod +x ./polling.sh
+          ./polling.sh -i ${WEBAPP}.azurewebsites.net/api/healthcheck/user-java
