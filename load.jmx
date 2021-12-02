@@ -44,9 +44,7 @@ Make test last 1 minute (see Scheduler)</stringProp>
           <stringProp name="HTTPSampler.protocol">http</stringProp>
           <stringProp name="HTTPSampler.contentEncoding"></stringProp>
           <stringProp name="HTTPSampler.path">/api/healthcheck/user-java</stringProp>
-          <stringProp name="TestPlan.comments">Notice Timeouts:
-Read to 30s
-Connect to 5s</stringProp>
+          <stringProp name="TestPlan.comments">Notice Timeouts: Read to 30s Connect to 5s</stringProp>
           <stringProp name="HTTPSampler.concurrentPool">4</stringProp>
           <stringProp name="HTTPSampler.connect_timeout">5000</stringProp>
           <stringProp name="HTTPSampler.response_timeout">30000</stringProp>
