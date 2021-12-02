@@ -25,11 +25,11 @@ jobs:
           loadtestConfigFile: loadtestconfig.yaml
           loadtestResource: tomaskubica-load-test
           resourceGroup: tomaskubica-rg
-          env:  |
+          env: |
             [
                 {
                 "name": "host",
-                "value": "openhackx6e34ru4userjava.azurewebsites.net",
+                "value": "openhackx6e34ru4userjava.azurewebsites.net"
                 }
             ]
 
