@@ -1,0 +1,30 @@
+name: LoadTest
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Azure Load Testing
+        uses: Azure/load-testing@v1
+        with:
+          loadtestConfigFile: load.jmx
+          loadtestResource: tomaskubica-load-test
+          resourceGroup: tomaskubica-rg
+          env:  |
+            [
+                {
+                "name": "host",
+                "value": "openhackx6e34ru4userjava.azurewebsites.net",
+                }
+            ]
+
