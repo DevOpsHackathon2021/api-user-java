@@ -36,6 +36,7 @@ jobs:
       ACRNAME: 'openhackx6e34ru4acr'
       IMAGETAG: ${{ github.sha }}
       WEBAPP: openhackx6e34ru4userjava
+      WEBAPP_RG: openhackx6e34ru4rg
       
     steps:
       - name: Checkout
@@ -45,7 +46,10 @@ jobs:
         uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_CREDS }}
-          
+
+      - name: Start slot
+        run: az webapp start -slot staging -n $WEBAPP -g $WEBAPP_RG
+
       - name: Deploy to STAGING Azure WebApp
         uses: Azure/webapps-deploy@v2
         with:
@@ -89,10 +93,16 @@ jobs:
           creds: ${{ secrets.AZURE_CREDS }}
 
       - name: Swap STAGING to PRODUCTION in Azure WebApp
-        if: ${{ success() }}
         run: az webapp deployment slot swap -s staging --target-slot production -n $WEBAPP -g $WEBAPP_RG
    
       - name: Test health
         run: |
           chmod +x ./polling.sh
           ./polling.sh -i ${WEBAPP}.azurewebsites.net/api/healthcheck/user-java
+
+      - name: Stop slot
+        run: az webapp stop -slot staging -n $WEBAPP -g $WEBAPP_RG
+
+      - name: Revert change in Azure WebApp
+        if: ${{ failure() }}
+        run: az webapp deployment slot swap -s production --target-slot staging -n $WEBAPP -g $WEBAPP_RG
