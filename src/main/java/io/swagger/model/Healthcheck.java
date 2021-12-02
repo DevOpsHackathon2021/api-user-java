@@ -20,6 +20,9 @@ public class Healthcheck   {
 
   public Healthcheck message(String message) {
     this.message = message;
+    if (message == message) {
+      this.message = message;
+    }
     return this;
   }
 
