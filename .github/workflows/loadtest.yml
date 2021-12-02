@@ -22,7 +22,7 @@ jobs:
       - name: Azure Load Testing
         uses: Azure/load-testing@v1
         with:
-          loadtestConfigFile: load.jmx
+          loadtestConfigFile: loadtestconfig.jmx
           loadtestResource: tomaskubica-load-test
           resourceGroup: tomaskubica-rg
           env:  |

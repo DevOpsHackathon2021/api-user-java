@@ -1,0 +1,5 @@
+version: v0.1
+testName: SampleApp
+testPlan: load.jmx
+description: 'SampleApp Test with secrets'
+engineInstances: 1
